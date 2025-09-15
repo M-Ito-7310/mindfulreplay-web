@@ -26,7 +26,8 @@ const mockAuth: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt'
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET || 'mindfulreplay-demo-secret'
 };
 
 // Real auth configuration
