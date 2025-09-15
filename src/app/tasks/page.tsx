@@ -112,29 +112,6 @@ export default function TasksPage() {
     }
   };
 
-  const updateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
-    try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setTasks(prev => prev.map(task =>
-          task.id === taskId ? { ...task, status: newStatus } : task
-        ));
-      } else {
-        setError('Failed to update task status');
-      }
-    } catch (err) {
-      setError('Failed to update task status');
-    }
-  };
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -323,39 +300,12 @@ export default function TasksPage() {
                         </div>
                       </div>
 
-                      {/* Status Actions */}
-                      <div className="flex items-center space-x-2 ml-4">
-                        {task.status === 'PENDING' && (
-                          <button
-                            onClick={() => updateTaskStatus(task.id, 'IN_PROGRESS')}
-                            className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
-                          >
-                            開始
-                          </button>
-                        )}
-                        {task.status === 'IN_PROGRESS' && (
-                          <button
-                            onClick={() => updateTaskStatus(task.id, 'COMPLETED')}
-                            className="px-3 py-1 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
-                          >
-                            完了
-                          </button>
-                        )}
-                        {task.status !== 'COMPLETED' && task.status !== 'CANCELLED' && (
-                          <button
-                            onClick={() => updateTaskStatus(task.id, 'CANCELLED')}
-                            className="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-50 rounded-md hover:bg-gray-100"
-                          >
-                            キャンセル
-                          </button>
-                        )}
-                        <Link
-                          href={`/tasks/${task.id}`}
-                          className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
-                        >
-                          編集
-                        </Link>
-                      </div>
+                      <Link
+                        href={`/tasks/${task.id}`}
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        詳細を表示 →
+                      </Link>
                     </div>
                   </div>
                 </div>
