@@ -38,5 +38,10 @@ export function shouldUseMockData(): boolean {
   return process.env.USE_MOCK_DATA === 'true' || !process.env.DATABASE_URL;
 }
 
+// Demo mode flag helper - for authentication
+export function shouldUseDemoAuth(): boolean {
+  return process.env.DEMO_MODE === 'true' || process.env.NODE_ENV === 'development' || shouldUseMockData();
+}
+
 // Default export
 export { prisma };

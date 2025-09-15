@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from './prisma';
-import { shouldUseMockData } from './database';
+import { shouldUseDemoAuth } from './database';
 
 // Mock auth for development
 const mockAuth: NextAuthOptions = {
@@ -65,4 +65,4 @@ const realAuth: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || 'mindfulreplay-fallback-secret-for-demo'
 };
 
-export const authOptions: NextAuthOptions = shouldUseMockData() ? mockAuth : realAuth;
+export const authOptions: NextAuthOptions = shouldUseDemoAuth() ? mockAuth : realAuth;
