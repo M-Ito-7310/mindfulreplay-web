@@ -96,8 +96,12 @@ export default function MemosPage() {
   };
 
   useEffect(() => {
+    console.log('[Memos Page] useEffect triggered - status:', status, 'session:', !!session);
     if (status === 'authenticated') {
+      console.log('[Memos Page] Status is authenticated, calling fetchMemos');
       fetchMemos();
+    } else {
+      console.log('[Memos Page] Status not authenticated:', status);
     }
   }, [status, filters]);
 
