@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Video } from '@/types';
 import { prisma, shouldUseMockData } from '@/lib/database';
+import { extractVideoId, getVideoMetadata } from '@/lib/youtube';
 
 // Mock database - Used when DATABASE_URL is not configured
 let mockVideos: Video[] = [
@@ -34,22 +35,6 @@ let mockVideos: Video[] = [
   }
 ];
 
-function extractVideoId(url: string): string | null {
-  const patterns = [
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/,
-    /(?:https?:\/\/)?youtu\.be\/([a-zA-Z0-9_-]{11})/,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/
-  ];
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-
-  return null;
-}
 
 function generateId(): string {
   return 'video_' + Math.random().toString(36).substr(2, 9);
@@ -218,22 +203,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get video metadata
-    const previewResponse = await fetch(
-      `${request.nextUrl.origin}/api/preview-video?url=${encodeURIComponent(youtubeUrl)}`
-    );
-
-    if (!previewResponse.ok) {
-      throw new Error('Failed to fetch video metadata');
-    }
-
-    const previewData = await previewResponse.json();
-
-    if (!previewData.success) {
-      throw new Error(previewData.error?.message || 'Failed to fetch video metadata');
-    }
-
-    const metadata = previewData.data.videoMetadata;
+    // Get video metadata directly
+    console.log(`[Videos API] Getting metadata for YouTube ID: ${youtubeId}`);
+    const metadata = await getVideoMetadata(youtubeId);
 
     // Use mock data if database is not configured
     if (shouldUseMockData()) {
