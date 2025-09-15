@@ -122,12 +122,12 @@ export default function HomePage() {
               <div
                 key={video.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => window.location.href = `/watch/${video.youtubeId}`}
+                onClick={() => window.location.href = `/watch/${video.youtube_id}`}
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-gray-200">
                   <img
-                    src={video.thumbnailUrl || `https://img.youtube.com/vi/${video.youtubeId}/maxresdefault.jpg`}
+                    src={video.thumbnail_url || `https://img.youtube.com/vi/${video.youtube_id}/maxresdefault.jpg`}
                     alt={video.title}
                     className="w-full h-full object-cover"
                   />
@@ -142,9 +142,9 @@ export default function HomePage() {
                     {truncateText(video.title, 60)}
                   </h3>
 
-                  {video.channelName && (
+                  {video.channel_name && (
                     <p className="text-sm text-gray-600 mb-2">
-                      {video.channelName}
+                      {video.channel_name}
                     </p>
                   )}
 
@@ -156,11 +156,11 @@ export default function HomePage() {
 
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>
-                      追加日: {formatDate(video.createdAt)}
+                      追加日: {formatDate(video.created_at)}
                     </span>
-                    {video.publishedAt && (
+                    {video.published_at && (
                       <span>
-                        公開: {formatDate(video.publishedAt)}
+                        公開: {formatDate(video.published_at)}
                       </span>
                     )}
                   </div>
