@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { formatTimestamp } from '@/lib/utils';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 interface Memo {
   id: string;
@@ -40,6 +41,13 @@ const MEMO_TYPE_COLORS = {
   ACTION: 'bg-green-100 text-green-800',
   QUESTION: 'bg-yellow-100 text-yellow-800',
   SUMMARY: 'bg-purple-100 text-purple-800'
+};
+
+const MEMO_TYPE_LABELS = {
+  INSIGHT: '洞察',
+  ACTION: 'アクション',
+  QUESTION: '質問',
+  SUMMARY: '要約'
 };
 
 const IMPORTANCE_COLORS = {
@@ -118,7 +126,7 @@ export default function MemosPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-gray-600">読み込み中...</div>
       </div>
     );
   }
@@ -127,8 +135,8 @@ export default function MemosPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h1>
-          <p className="text-gray-600">Please sign in to view your memos.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">認証が必要です</h1>
+          <p className="text-gray-600">メモを表示するにはサインインしてください。</p>
         </div>
       </div>
     );
@@ -136,10 +144,11 @@ export default function MemosPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AppHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Memos</h1>
-          <p className="mt-2 text-gray-600">All your learning insights and notes</p>
+          <h1 className="text-3xl font-bold text-gray-900">マイメモ</h1>
+          <p className="mt-2 text-gray-600">すべての学習洞察とメモ</p>
         </div>
 
         {/* Filters */}
@@ -147,47 +156,47 @@ export default function MemosPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search
+                検索
               </label>
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                placeholder="Search memo content..."
+                placeholder="メモ内容を検索..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Type
+                タイプ
               </label>
               <select
                 value={filters.memoType}
                 onChange={(e) => handleFilterChange('memoType', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">All Types</option>
-                <option value="INSIGHT">Insight</option>
-                <option value="ACTION">Action</option>
-                <option value="QUESTION">Question</option>
-                <option value="SUMMARY">Summary</option>
+                <option value="">すべてのタイプ</option>
+                <option value="INSIGHT">洞察</option>
+                <option value="ACTION">アクション</option>
+                <option value="QUESTION">質問</option>
+                <option value="SUMMARY">要約</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Importance
+                重要度
               </label>
               <select
                 value={filters.importance}
                 onChange={(e) => handleFilterChange('importance', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">All Levels</option>
-                <option value="5">Very High (5)</option>
-                <option value="4">High (4)</option>
-                <option value="3">Medium (3)</option>
-                <option value="2">Low (2)</option>
-                <option value="1">Very Low (1)</option>
+                <option value="">すべてのレベル</option>
+                <option value="5">非常に高い (5)</option>
+                <option value="4">高い (4)</option>
+                <option value="3">中 (3)</option>
+                <option value="2">低い (2)</option>
+                <option value="1">非常に低い (1)</option>
               </select>
             </div>
           </div>
@@ -195,7 +204,7 @@ export default function MemosPage() {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="text-gray-600">Loading memos...</div>
+            <div className="text-gray-600">メモを読み込み中...</div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -203,7 +212,7 @@ export default function MemosPage() {
           </div>
         ) : memos.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-600">No memos found. Start watching videos and taking notes!</div>
+            <div className="text-gray-600">メモが見つかりません。動画を視聴してメモをとり始めましょう！</div>
           </div>
         ) : (
           <>
@@ -248,7 +257,7 @@ export default function MemosPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${MEMO_TYPE_COLORS[memo.memoType]}`}>
-                          {memo.memoType}
+                          {MEMO_TYPE_LABELS[memo.memoType]}
                         </span>
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${IMPORTANCE_COLORS[memo.importance as keyof typeof IMPORTANCE_COLORS]}`}>
                           {memo.importance}/5
@@ -258,7 +267,7 @@ export default function MemosPage() {
                         href={`/memos/${memo.id}`}
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
-                        View Details →
+                        詳細を表示 →
                       </Link>
                     </div>
 
@@ -288,7 +297,7 @@ export default function MemosPage() {
                   disabled={pagination.page === 1}
                   className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  前へ
                 </button>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
@@ -310,7 +319,7 @@ export default function MemosPage() {
                   disabled={pagination.page === pagination.totalPages}
                   className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  次へ
                 </button>
               </div>
             )}

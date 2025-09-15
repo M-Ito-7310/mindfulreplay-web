@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import YouTubePlayer, { YouTubePlayerRef } from '@/components/YouTubePlayer';
 import TimestampText from '@/components/TimestampText';
 import { Video, Memo } from '@/types';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 export default function VideoPlayerPage() {
   const params = useParams();
@@ -123,20 +124,7 @@ export default function VideoPlayerPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold text-gray-900">MindfulReplay</h1>
-            <nav className="flex space-x-4">
-              <a href="/" className="text-blue-600 hover:text-blue-800">Videos</a>
-              <a href="/memos" className="text-gray-600 hover:text-gray-800">Memos</a>
-              <a href="/tasks" className="text-gray-600 hover:text-gray-800">Tasks</a>
-            </nav>
-          </div>
-        </div>
-      </header>
-
+      <AppHeader />
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

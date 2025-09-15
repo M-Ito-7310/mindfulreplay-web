@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Video } from '@/types';
 import { AddVideoModal } from '@/components/video/AddVideoModal';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 export default function HomePage() {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -58,19 +59,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold text-gray-900">MindfulReplay</h1>
-            <nav className="flex space-x-4">
-              <a href="/" className="text-blue-600 hover:text-blue-800">Videos</a>
-              <a href="/memos" className="text-gray-600 hover:text-gray-800">Memos</a>
-              <a href="/tasks" className="text-gray-600 hover:text-gray-800">Tasks</a>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

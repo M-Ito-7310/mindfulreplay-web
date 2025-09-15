@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 export default function OfflinePage() {
   const [isOnline, setIsOnline] = useState(true);
@@ -28,7 +29,9 @@ export default function OfflinePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50">
+      <AppHeader />
+      <div className="flex items-center justify-center px-4" style={{ minHeight: 'calc(100vh - 64px)' }}>
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
         <div className="mb-6">
           <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -57,13 +60,13 @@ export default function OfflinePage() {
           </div>
 
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {isOnline ? 'Connection Restored' : 'You\'re Offline'}
+            {isOnline ? '接続が復旧しました' : 'オフラインです'}
           </h1>
 
           <p className="text-gray-600">
             {isOnline
-              ? 'Your internet connection has been restored. You can now continue using MindfulReplay.'
-              : 'It looks like you\'re not connected to the internet. Some features may not be available until you reconnect.'
+              ? 'インターネット接続が復旧しました。MindfulReplayを引き続きご利用いただけます。'
+              : 'インターネットに接続されていないようです。一部の機能は再接続するまで利用できません。'
             }
           </p>
         </div>
@@ -77,24 +80,25 @@ export default function OfflinePage() {
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
-            {isOnline ? 'Return to App' : 'Try Again'}
+            {isOnline ? 'アプリに戻る' : '再試行'}
           </button>
 
           <div className="text-sm text-gray-500">
-            <p className="mb-2">While offline, you can still:</p>
+            <p className="mb-2">オフライン中でも以下のことができます：</p>
             <ul className="text-left space-y-1">
-              <li>• View previously loaded content</li>
-              <li>• Browse cached videos and memos</li>
-              <li>• Use offline features</li>
+              <li>• 以前に読み込まれたコンテンツの表示</li>
+              <li>• キャッシュされた動画とメモの閲覧</li>
+              <li>• オフライン機能の使用</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-400">
-            MindfulReplay works best with an internet connection
+            MindfulReplayはインターネット接続時に最適に動作します
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

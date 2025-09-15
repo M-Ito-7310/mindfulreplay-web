@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { YouTubePlayer } from '@/components/video/YouTubePlayer';
 import { formatTimestamp } from '@/lib/utils';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 interface Video {
   id: string;
@@ -178,11 +179,12 @@ export default function WatchPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AppHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Navigation */}
         <div className="mb-6">
           <Link href="/" className="text-blue-600 hover:text-blue-800 text-sm">
-            ← Back to Videos
+            ← 動画一覧に戻る
           </Link>
         </div>
 

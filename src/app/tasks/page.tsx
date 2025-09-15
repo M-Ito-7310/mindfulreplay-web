@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { AppHeader } from '@/components/ui/AppHeader';
 
 interface Task {
   id: string;
@@ -53,17 +54,17 @@ const PRIORITY_COLORS = {
 };
 
 const STATUS_LABELS = {
-  PENDING: 'Pending',
-  IN_PROGRESS: 'In Progress',
-  COMPLETED: 'Completed',
-  CANCELLED: 'Cancelled'
+  PENDING: '未着手',
+  IN_PROGRESS: '進行中',
+  COMPLETED: '完了',
+  CANCELLED: 'キャンセル'
 };
 
 const PRIORITY_LABELS = {
-  LOW: 'Low',
-  MEDIUM: 'Medium',
-  HIGH: 'High',
-  URGENT: 'Urgent'
+  LOW: '低',
+  MEDIUM: '中',
+  HIGH: '高',
+  URGENT: '緊急'
 };
 
 export default function TasksPage() {
@@ -152,7 +153,7 @@ export default function TasksPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('ja-JP', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
@@ -166,7 +167,7 @@ export default function TasksPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-gray-600">読み込み中...</div>
       </div>
     );
   }
@@ -175,8 +176,8 @@ export default function TasksPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h1>
-          <p className="text-gray-600">Please sign in to view your tasks.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">認証が必要です</h1>
+          <p className="text-gray-600">タスクを表示するにはサインインしてください。</p>
         </div>
       </div>
     );
@@ -184,10 +185,11 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AppHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Tasks</h1>
-          <p className="mt-2 text-gray-600">Track your learning goals and action items</p>
+          <h1 className="text-3xl font-bold text-gray-900">マイタスク</h1>
+          <p className="mt-2 text-gray-600">学習目標とアクションアイテムを管理しましょう</p>
         </div>
 
         {/* Filters */}
@@ -195,46 +197,46 @@ export default function TasksPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search
+                検索
               </label>
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                placeholder="Search tasks..."
+                placeholder="タスクを検索..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status
+                ステータス
               </label>
               <select
                 value={filters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">All Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
+                <option value="">すべてのステータス</option>
+                <option value="PENDING">未着手</option>
+                <option value="IN_PROGRESS">進行中</option>
+                <option value="COMPLETED">完了</option>
+                <option value="CANCELLED">キャンセル</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Priority
+                優先度
               </label>
               <select
                 value={filters.priority}
                 onChange={(e) => handleFilterChange('priority', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">All Priorities</option>
-                <option value="URGENT">Urgent</option>
-                <option value="HIGH">High</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LOW">Low</option>
+                <option value="">すべての優先度</option>
+                <option value="URGENT">緊急</option>
+                <option value="HIGH">高</option>
+                <option value="MEDIUM">中</option>
+                <option value="LOW">低</option>
               </select>
             </div>
           </div>
@@ -242,7 +244,7 @@ export default function TasksPage() {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="text-gray-600">Loading tasks...</div>
+            <div className="text-gray-600">タスクを読み込み中...</div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -250,7 +252,7 @@ export default function TasksPage() {
           </div>
         ) : tasks.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-600">No tasks found. Create tasks from your memos or add new ones!</div>
+            <div className="text-gray-600">タスクが見つかりません。メモからタスクを作成するか、新しいものを追加してください！</div>
           </div>
         ) : (
           <>
@@ -306,16 +308,16 @@ export default function TasksPage() {
 
                         {/* Dates */}
                         <div className="flex items-center space-x-6 text-sm text-gray-500">
-                          <span>Created: {formatDate(task.createdAt)}</span>
+                          <span>作成日: {formatDate(task.createdAt)}</span>
                           {task.dueDate && (
                             <span className={isOverdue(task.dueDate) && task.status !== 'COMPLETED' ? 'text-red-600 font-medium' : ''}>
-                              Due: {formatDate(task.dueDate)}
-                              {isOverdue(task.dueDate) && task.status !== 'COMPLETED' && ' (Overdue)'}
+                              期限: {formatDate(task.dueDate)}
+                              {isOverdue(task.dueDate) && task.status !== 'COMPLETED' && ' (期限切れ)'}
                             </span>
                           )}
                           {task.completedAt && (
                             <span className="text-green-600">
-                              Completed: {formatDate(task.completedAt)}
+                              完了日: {formatDate(task.completedAt)}
                             </span>
                           )}
                         </div>
@@ -328,7 +330,7 @@ export default function TasksPage() {
                             onClick={() => updateTaskStatus(task.id, 'IN_PROGRESS')}
                             className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
                           >
-                            Start
+                            開始
                           </button>
                         )}
                         {task.status === 'IN_PROGRESS' && (
@@ -336,7 +338,7 @@ export default function TasksPage() {
                             onClick={() => updateTaskStatus(task.id, 'COMPLETED')}
                             className="px-3 py-1 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
                           >
-                            Complete
+                            完了
                           </button>
                         )}
                         {task.status !== 'COMPLETED' && task.status !== 'CANCELLED' && (
@@ -344,14 +346,14 @@ export default function TasksPage() {
                             onClick={() => updateTaskStatus(task.id, 'CANCELLED')}
                             className="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-50 rounded-md hover:bg-gray-100"
                           >
-                            Cancel
+                            キャンセル
                           </button>
                         )}
                         <Link
                           href={`/tasks/${task.id}`}
                           className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
                         >
-                          Edit
+                          編集
                         </Link>
                       </div>
                     </div>
@@ -368,7 +370,7 @@ export default function TasksPage() {
                   disabled={pagination.page === 1}
                   className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  前へ
                 </button>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
@@ -390,7 +392,7 @@ export default function TasksPage() {
                   disabled={pagination.page === pagination.totalPages}
                   className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  次へ
                 </button>
               </div>
             )}
