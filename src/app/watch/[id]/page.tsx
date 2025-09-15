@@ -149,6 +149,11 @@ export default function WatchPage() {
   };
 
   const handleAddMemoAtCurrentTime = () => {
+    // 動画を一時停止
+    if (playerRef.current) {
+      playerRef.current.pause();
+    }
+
     setMemoForm(prev => ({
       ...prev,
       timestampSec: Math.floor(currentTime)
@@ -247,94 +252,6 @@ export default function WatchPage() {
               </div>
             </div>
 
-            {/* Memo Form */}
-            {showMemoForm && status === 'authenticated' && (
-              <div className="bg-white rounded-lg shadow p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Memo</h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Content
-                    </label>
-                    <textarea
-                      value={memoForm.content}
-                      onChange={(e) => setMemoForm(prev => ({ ...prev, content: e.target.value }))}
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter your memo content..."
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Type
-                      </label>
-                      <select
-                        value={memoForm.memoType}
-                        onChange={(e) => setMemoForm(prev => ({ ...prev, memoType: e.target.value as any }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="INSIGHT">Insight</option>
-                        <option value="ACTION">Action</option>
-                        <option value="QUESTION">Question</option>
-                        <option value="SUMMARY">Summary</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Importance
-                      </label>
-                      <select
-                        value={memoForm.importance}
-                        onChange={(e) => setMemoForm(prev => ({ ...prev, importance: parseInt(e.target.value) }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value={1}>1 - Very Low</option>
-                        <option value={2}>2 - Low</option>
-                        <option value={3}>3 - Medium</option>
-                        <option value={4}>4 - High</option>
-                        <option value={5}>5 - Very High</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Timestamp
-                      </label>
-                      <input
-                        type="number"
-                        value={memoForm.timestampSec || ''}
-                        onChange={(e) => setMemoForm(prev => ({
-                          ...prev,
-                          timestampSec: e.target.value ? parseInt(e.target.value) : undefined
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Seconds"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-3">
-                    <button
-                      onClick={() => setShowMemoForm(false)}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleCreateMemo}
-                      disabled={!memoForm.content.trim()}
-                      className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
-                    >
-                      Create Memo
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Memos Sidebar */}
@@ -401,6 +318,108 @@ export default function WatchPage() {
           </div>
         </div>
       </div>
+
+      {/* Memo Creation Modal */}
+      {showMemoForm && status === 'authenticated' && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">新しいメモを作成</h3>
+                <button
+                  onClick={() => setShowMemoForm(false)}
+                  className="text-gray-400 hover:text-gray-600 text-xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    内容
+                  </label>
+                  <textarea
+                    value={memoForm.content}
+                    onChange={(e) => setMemoForm(prev => ({ ...prev, content: e.target.value }))}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="メモの内容を入力してください..."
+                    autoFocus
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      タイプ
+                    </label>
+                    <select
+                      value={memoForm.memoType}
+                      onChange={(e) => setMemoForm(prev => ({ ...prev, memoType: e.target.value as any }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="INSIGHT">洞察</option>
+                      <option value="ACTION">アクション</option>
+                      <option value="QUESTION">質問</option>
+                      <option value="SUMMARY">要約</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      重要度
+                    </label>
+                    <select
+                      value={memoForm.importance}
+                      onChange={(e) => setMemoForm(prev => ({ ...prev, importance: parseInt(e.target.value) }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value={1}>1 - 非常に低い</option>
+                      <option value={2}>2 - 低い</option>
+                      <option value={3}>3 - 中</option>
+                      <option value={4}>4 - 高い</option>
+                      <option value={5}>5 - 非常に高い</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      タイムスタンプ（秒）
+                    </label>
+                    <input
+                      type="number"
+                      value={memoForm.timestampSec || ''}
+                      onChange={(e) => setMemoForm(prev => ({
+                        ...prev,
+                        timestampSec: e.target.value ? parseInt(e.target.value) : undefined
+                      }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="秒数"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowMemoForm(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={handleCreateMemo}
+                    disabled={!memoForm.content.trim()}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    メモを作成
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
