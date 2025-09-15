@@ -42,7 +42,9 @@ export function shouldUseMockData(): boolean {
 export function shouldUseDemoAuth(): boolean {
   // For portfolio demo: Always use demo auth unless we have real OAuth providers configured
   // This ensures the app works immediately without complex auth setup
-  return true;
+  const demoAuth = true;
+  console.log('[Database] shouldUseDemoAuth returning:', demoAuth);
+  return demoAuth;
 }
 
 // Default export

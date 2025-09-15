@@ -8,6 +8,7 @@ const mockAuth: NextAuthOptions = {
   providers: [],
   callbacks: {
     async session({ session, token }) {
+      console.log('[Auth] Mock session callback triggered');
       // Mock user data
       session.user = {
         id: 'user1',
@@ -15,6 +16,7 @@ const mockAuth: NextAuthOptions = {
         name: 'Demo User',
         image: null
       };
+      console.log('[Auth] Mock session created:', JSON.stringify(session.user, null, 2));
       return session;
     },
     async jwt({ token, user }) {
@@ -65,4 +67,6 @@ const realAuth: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || 'mindfulreplay-fallback-secret-for-demo'
 };
 
-export const authOptions: NextAuthOptions = shouldUseDemoAuth() ? mockAuth : realAuth;
+const demoMode = shouldUseDemoAuth();
+console.log('[Auth] Demo mode enabled:', demoMode);
+export const authOptions: NextAuthOptions = demoMode ? mockAuth : realAuth;

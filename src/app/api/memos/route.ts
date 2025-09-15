@@ -57,8 +57,17 @@ const mockMemos = [
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('[Memos API] GET request received');
     const session = await getServerSession(authOptions);
+    console.log('[Memos API] Session retrieved:', JSON.stringify({
+      hasSession: !!session,
+      hasUser: !!session?.user,
+      userId: session?.user?.id,
+      userEmail: session?.user?.email
+    }, null, 2));
+
     if (!session?.user?.id) {
+      console.log('[Memos API] Authentication failed - no session or user ID');
       return NextResponse.json(
         { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
         { status: 401 }
