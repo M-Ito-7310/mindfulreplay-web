@@ -49,6 +49,7 @@ export default function WatchPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [showMemoForm, setShowMemoForm] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const [memoForm, setMemoForm] = useState({
     content: '',
     timestampSec: undefined as number | undefined,
@@ -207,7 +208,17 @@ export default function WatchPage() {
 
                 {video.description && (
                   <div className="mb-4">
-                    <p className="text-gray-700 whitespace-pre-wrap">{video.description}</p>
+                    <p className={`text-gray-700 whitespace-pre-wrap ${showFullDescription ? '' : 'line-clamp-5'}`}>
+                      {video.description}
+                    </p>
+                    {video.description.split('\n').length > 5 && (
+                      <button
+                        onClick={() => setShowFullDescription(!showFullDescription)}
+                        className="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      >
+                        {showFullDescription ? '折りたたむ ↑' : 'もっと見る ↓'}
+                      </button>
+                    )}
                   </div>
                 )}
 
