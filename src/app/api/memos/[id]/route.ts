@@ -24,7 +24,14 @@ const mockMemos = [
     createdAt: new Date('2024-01-15T10:30:00'),
     updatedAt: new Date('2024-01-15T10:30:00'),
     tasks: [],
-    tags: []
+    tags: [],
+    video: {
+      id: 'video1',
+      title: 'React Hooks Best Practices',
+      youtubeId: 'dQw4w9WgXcQ',
+      thumbnailUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+      duration: 600
+    }
   },
   {
     id: 'memo2',
@@ -37,7 +44,14 @@ const mockMemos = [
     createdAt: new Date('2024-01-16T14:20:00'),
     updatedAt: new Date('2024-01-16T14:20:00'),
     tasks: [],
-    tags: []
+    tags: [],
+    video: {
+      id: 'video2',
+      title: 'Advanced React Performance Patterns',
+      youtubeId: 'jNQXAC9IVRw',
+      thumbnailUrl: 'https://img.youtube.com/vi/jNQXAC9IVRw/maxresdefault.jpg',
+      duration: 720
+    }
   },
   {
     id: 'memo3',
@@ -50,7 +64,14 @@ const mockMemos = [
     createdAt: new Date('2024-01-17T09:15:00'),
     updatedAt: new Date('2024-01-17T09:15:00'),
     tasks: [],
-    tags: []
+    tags: [],
+    video: {
+      id: 'video1',
+      title: 'React Hooks Best Practices',
+      youtubeId: 'dQw4w9WgXcQ',
+      thumbnailUrl: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+      duration: 600
+    }
   }
 ];
 
@@ -60,7 +81,10 @@ export async function GET(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // For demo mode: Always allow access with default user
+    let userId = session?.user?.id || 'user1';
+
+    if (!userId) {
       return NextResponse.json(
         { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
         { status: 401 }
@@ -70,7 +94,7 @@ export async function GET(
     const { id } = params;
 
     if (shouldUseMockData()) {
-      const memo = mockMemos.find(m => m.id === id && m.userId === session.user.id);
+      const memo = mockMemos.find(m => m.id === id && m.userId === userId);
 
       if (!memo) {
         return NextResponse.json(
@@ -94,7 +118,7 @@ export async function GET(
     const memo = await prisma.memo.findFirst({
       where: {
         id,
-        userId: session.user.id
+        userId: userId
       },
       include: {
         tasks: true,
@@ -150,7 +174,10 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // For demo mode: Always allow access with default user
+    let userId = session?.user?.id || 'user1';
+
+    if (!userId) {
       return NextResponse.json(
         { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
         { status: 401 }
@@ -162,7 +189,7 @@ export async function PUT(
     const validatedData = updateMemoSchema.parse(body);
 
     if (shouldUseMockData()) {
-      const memoIndex = mockMemos.findIndex(m => m.id === id && m.userId === session.user.id);
+      const memoIndex = mockMemos.findIndex(m => m.id === id && m.userId === userId);
 
       if (memoIndex === -1) {
         return NextResponse.json(
@@ -192,7 +219,7 @@ export async function PUT(
     const existingMemo = await prisma.memo.findFirst({
       where: {
         id,
-        userId: session.user.id
+        userId: userId
       }
     });
 
@@ -268,7 +295,10 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // For demo mode: Always allow access with default user
+    let userId = session?.user?.id || 'user1';
+
+    if (!userId) {
       return NextResponse.json(
         { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
         { status: 401 }
@@ -278,7 +308,7 @@ export async function DELETE(
     const { id } = params;
 
     if (shouldUseMockData()) {
-      const memoIndex = mockMemos.findIndex(m => m.id === id && m.userId === session.user.id);
+      const memoIndex = mockMemos.findIndex(m => m.id === id && m.userId === userId);
 
       if (memoIndex === -1) {
         return NextResponse.json(
@@ -304,7 +334,7 @@ export async function DELETE(
     const existingMemo = await prisma.memo.findFirst({
       where: {
         id,
-        userId: session.user.id
+        userId: userId
       }
     });
 
