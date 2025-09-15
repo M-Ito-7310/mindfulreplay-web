@@ -60,7 +60,8 @@ const realAuth: NextAuthOptions = {
     signIn: '/auth/signin',
     signUp: '/auth/signup',
     error: '/auth/error'
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET || 'mindfulreplay-fallback-secret-for-demo'
 };
 
 export const authOptions: NextAuthOptions = shouldUseMockData() ? mockAuth : realAuth;
