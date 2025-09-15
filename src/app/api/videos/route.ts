@@ -46,12 +46,21 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '20', 10);
     const search = searchParams.get('search');
+    const youtubeId = searchParams.get('youtubeId');
+
+    console.log(`[Videos API] GET request - page: ${page}, limit: ${limit}, search: ${search}, youtubeId: ${youtubeId}`);
 
     // Use mock data if database is not configured
     if (shouldUseMockData()) {
       console.log('[Videos API] Using mock data (no database configured)');
 
       let filteredVideos = [...mockVideos];
+
+      // Filter by specific YouTube ID if provided
+      if (youtubeId) {
+        filteredVideos = filteredVideos.filter(video => video.youtube_id === youtubeId);
+        console.log(`[Videos API] Filtered by youtubeId: ${youtubeId}, found: ${filteredVideos.length} videos`);
+      }
 
       // Apply search filter
       if (search && search.trim()) {
@@ -96,16 +105,25 @@ export async function GET(request: NextRequest) {
     // TODO: Get userId from authentication
     const userId = 'user1'; // Mock user for now
 
-    const where = {
+    // Build where clause
+    const where: any = {
       userId,
-      ...(search && search.trim() ? {
-        OR: [
-          { title: { contains: search, mode: 'insensitive' as const } },
-          { description: { contains: search, mode: 'insensitive' as const } },
-          { channelName: { contains: search, mode: 'insensitive' as const } },
-        ]
-      } : {})
     };
+
+    // Filter by specific YouTube ID if provided
+    if (youtubeId) {
+      where.youtubeId = youtubeId;
+      console.log(`[Videos API] Filtering by youtubeId: ${youtubeId}`);
+    }
+
+    // Add search filter
+    if (search && search.trim()) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' as const } },
+        { description: { contains: search, mode: 'insensitive' as const } },
+        { channelName: { contains: search, mode: 'insensitive' as const } },
+      ];
+    }
 
     const [videos, total] = await Promise.all([
       prisma.video.findMany({
@@ -116,6 +134,8 @@ export async function GET(request: NextRequest) {
       }),
       prisma.video.count({ where })
     ]);
+
+    console.log(`[Videos API] Found ${videos.length} videos with query:`, JSON.stringify(where, null, 2));
 
     const totalPages = Math.ceil(total / limit);
 
