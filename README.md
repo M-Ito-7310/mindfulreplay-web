@@ -1,141 +1,225 @@
-# MindfulReplay Web App
+# MindfulReplay
 
-A modern web application for learning with YouTube videos, allowing users to save videos, create memos, and manage tasks.
+YouTube動画での学習を支援するモダンなWebアプリケーション。動画保存、メモ作成、タスク管理機能を提供します。
 
-## Features
+## ✨ 特徴
 
-- 📹 **Video Management**: Save and organize YouTube learning videos
-- 📝 **Smart Memos**: Create memos with timestamps and templates
-- 🎯 **Task Management**: Convert memos into actionable tasks
-- ⏱️ **Timestamp Navigation**: Click timestamps to jump to specific video moments
-- 🎨 **Modern UI**: Responsive design built with Tailwind CSS
+- 📹 **動画管理**: YouTube学習動画の保存と整理
+- 📝 **スマートメモ**: タイムスタンプ付きメモとテンプレート機能
+- 🎯 **タスク管理**: メモから実行可能なタスクへの変換
+- ⏱️ **タイムスタンプナビゲーション**: クリックで動画の特定位置にジャンプ
+- 📱 **PWA対応**: オフライン機能とアプリインストール
+- 🎨 **モダンUI**: Tailwind CSSによるレスポンシブデザイン
+- 🔐 **認証システム**: NextAuth.js統合（デモモード対応）
 
-## Tech Stack
+## 🚀 技術スタック
 
-- **Frontend**: Next.js 15, React 18, TypeScript
-- **Styling**: Tailwind CSS
-- **API**: Next.js App Router API Routes
-- **Video Player**: YouTube IFrame API
-- **Deployment**: Vercel
+- **フロントエンド**: Next.js 15, React 18, TypeScript
+- **スタイリング**: Tailwind CSS
+- **バックエンド**: Next.js App Router API Routes
+- **データベース**: Prisma ORM + PlanetScale (MySQL)
+- **認証**: NextAuth.js
+- **動画プレイヤー**: YouTube IFrame API
+- **PWA**: Service Worker + Workbox
+- **デプロイ**: Vercel
 
-## Getting Started
+## 🛠 セットアップ
 
-### Prerequisites
+### 前提条件
 
 - Node.js 18+
-- npm or yarn
+- npm または yarn
 
-### Installation
+### インストール
 
-1. Clone the repository:
+1. リポジトリをクローン:
 ```bash
 git clone <repository-url>
 cd web
 ```
 
-2. Install dependencies:
+2. 依存関係をインストール:
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+3. 環境変数を設定:
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
-Edit `.env.local` and configure:
+`.env.local` を編集:
 ```
-YOUTUBE_API_KEY=your_youtube_api_key_here
-YOUTUBE_USE_MOCK=false
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+# データベース（オプション - 設定しない場合はモックデータを使用）
+DATABASE_URL=mysql://user:pass@host:port/database
+
+# 認証（オプション - 設定しない場合はデモモードを使用）
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-here
+
+# YouTube API（オプション - 設定しない場合はモックデータを使用）
+YOUTUBE_API_KEY=your-youtube-api-key
+
+# 開発設定
+NODE_ENV=development
+USE_MOCK_DATA=true
 ```
 
-4. Start the development server:
+4. 開発サーバーを起動:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+[http://localhost:3000](http://localhost:3000) でアプリを確認できます。
 
-## Development Mode
+## 🎯 デモモード
 
-The app includes mock data for development when `YOUTUBE_USE_MOCK=true`. This allows you to test features without a YouTube API key.
+アプリはデフォルトでデモモードで動作し、以下の機能を提供します：
+- モックユーザー認証
+- サンプル動画データ
+- ローカルストレージでの永続化
+- 全機能が完全に動作
 
-## API Endpoints
+## 📡 API エンドポイント
 
-- `GET /api/videos` - List saved videos
-- `POST /api/videos` - Save a new video
-- `GET /api/preview-video` - Preview video metadata from YouTube URL
+### 動画関連
+- `GET /api/videos` - 保存された動画の一覧取得
+- `POST /api/videos` - 新しい動画の保存
+- `GET /api/preview-video` - YouTube URLからの動画メタデータ取得
 
-## Deployment
+### メモ関連
+- `GET /api/memos` - メモの一覧取得
+- `POST /api/memos` - 新しいメモの作成
+- `GET /api/memos/[id]` - メモの詳細取得
+- `PUT /api/memos/[id]` - メモの更新
+- `DELETE /api/memos/[id]` - メモの削除
 
-### Vercel (Recommended)
+### タスク関連
+- `GET /api/tasks` - タスクの一覧取得
+- `POST /api/tasks` - 新しいタスクの作成
+- `POST /api/memos/[id]/tasks` - メモからタスクの作成
+- `PUT /api/tasks/[id]` - タスクの更新
+- `DELETE /api/tasks/[id]` - タスクの削除
 
-1. Install Vercel CLI:
+### その他
+- `GET /api/health` - ヘルスチェック
+- `GET /api/auth/[...nextauth]` - 認証エンドポイント
+
+## 🚀 デプロイ
+
+### Vercel（推奨）
+
+1. Vercel CLIをインストール:
 ```bash
 npm i -g vercel
 ```
 
-2. Deploy:
+2. デプロイ:
 ```bash
 vercel
 ```
 
-3. Set environment variables in Vercel dashboard:
-   - `YOUTUBE_API_KEY` (optional)
-   - `YOUTUBE_USE_MOCK=true` (for demo mode)
+3. Vercelダッシュボードで環境変数を設定:
+   - `DATABASE_URL` (オプション)
+   - `NEXTAUTH_URL` (本番URL)
+   - `NEXTAUTH_SECRET` (本番用シークレット)
+   - `YOUTUBE_API_KEY` (オプション)
+   - `USE_MOCK_DATA=false` (本番環境の場合)
 
-### Manual Build
+### マニュアルビルド
 
 ```bash
 npm run build
 npm start
 ```
 
-## Project Structure
+## 📁 プロジェクト構造
 
 ```
 src/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   ├── video/[videoId]/   # Video player page
-│   └── page.tsx           # Home page
-├── components/            # React components
-│   ├── memo/             # Memo management
-│   ├── video/            # Video components
-│   ├── TimestampText.tsx # Timestamp parsing
-│   └── YouTubePlayer.tsx # YouTube player
-└── types/                # TypeScript definitions
+├── app/                      # Next.js App Router
+│   ├── api/                 # API ルート
+│   │   ├── auth/           # 認証関連API
+│   │   ├── videos/         # 動画管理API
+│   │   ├── memos/          # メモ管理API
+│   │   └── tasks/          # タスク管理API
+│   ├── memos/              # メモページ
+│   ├── tasks/              # タスクページ
+│   ├── watch/              # 動画視聴ページ
+│   └── offline/            # オフラインページ
+├── components/              # Reactコンポーネント
+│   ├── memo/               # メモ関連コンポーネント
+│   └── video/              # 動画関連コンポーネント
+├── lib/                    # ユーティリティと設定
+│   ├── auth.ts            # 認証設定
+│   ├── database.ts        # データベース設定
+│   ├── prisma.ts          # Prismaクライアント
+│   └── utils.ts           # ユーティリティ関数
+└── types/                  # TypeScript型定義
 ```
 
-## Features in Detail
+## 🎨 主要機能詳細
 
-### Video Management
-- Save YouTube videos by URL
-- Automatic metadata extraction
-- Grid view with thumbnails
-- Video duration and channel info
+### 動画管理
+- YouTube URLからの動画保存
+- 自動メタデータ取得
+- サムネイル付きグリッドビュー
+- 動画時間とチャンネル情報表示
 
-### Memo System
-- Create memos with templates (insight, action, question, summary)
-- Importance ratings (1-5 stars)
-- Timestamp integration
-- Clickable timestamps in memo content
+### メモシステム
+- 4つのメモタイプ（洞察、アクション、質問、要約）
+- 重要度レーティング（1-5段階）
+- タイムスタンプ統合
+- メモ内クリック可能タイムスタンプ
 
-### YouTube Integration
-- YouTube IFrame API for video playback
-- Automatic video ID extraction from URLs
-- Thumbnail and metadata fetching
-- Mock data for development
+### タスク管理
+- メモからタスクへの変換
+- 優先度とステータス管理
+- 期日設定と進捗追跡
+- 関連メモとの連携
 
-## Contributing
+### PWA機能
+- オフライン対応
+- アプリインストール
+- バックグラウンド同期
+- インテリジェントキャッシング
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## 🔧 設定オプション
 
-## License
+### データベース設定（オプション）
 
-This project is private and proprietary.
+1. PlanetScaleデータベースを作成
+2. `DATABASE_URL`を環境変数に設定
+3. マイグレーション実行:
+```bash
+npx prisma db push
+```
+
+### YouTube API設定（オプション）
+
+1. Google Cloud ConsoleでYouTube Data API v3を有効化
+2. APIキーを取得
+3. `YOUTUBE_API_KEY`を環境変数に設定
+
+## 🤝 コントリビューション
+
+1. リポジトリをフォーク
+2. フィーチャーブランチを作成: `git checkout -b feature/new-feature`
+3. 変更をコミット: `git commit -am 'Add new feature'`
+4. ブランチにプッシュ: `git push origin feature/new-feature`
+5. プルリクエストを送信
+
+## 📄 ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています。
+
+## 🙏 謝辞
+
+- Next.jsチーム - 優れたフレームワークの提供
+- Vercel - ホスティングとデプロイプラットフォームの提供
+- PlanetScale - データベースソリューションの提供
+- YouTube - 動画プラットフォーム統合の提供
+
+---
+
+❤️ Next.jsとTypeScriptで構築
