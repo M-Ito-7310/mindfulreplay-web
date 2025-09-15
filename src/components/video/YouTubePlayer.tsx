@@ -13,6 +13,7 @@ interface YouTubePlayerProps {
   videoId: string;
   onTimeUpdate?: (currentTime: number) => void;
   className?: string;
+  initialTime?: number;
 }
 
 export interface YouTubePlayerRef {
@@ -23,7 +24,7 @@ export interface YouTubePlayerRef {
 }
 
 export const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(
-  ({ videoId, onTimeUpdate, className }, ref) => {
+  ({ videoId, onTimeUpdate, className, initialTime }, ref) => {
     const playerRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const timeUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -85,6 +86,11 @@ export const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(
       }
 
       function onPlayerReady() {
+        // Seek to initial time if provided
+        if (initialTime && initialTime > 0 && playerRef.current && playerRef.current.seekTo) {
+          playerRef.current.seekTo(initialTime, true);
+        }
+
         // Start time update interval when player is ready
         if (onTimeUpdate) {
           timeUpdateIntervalRef.current = setInterval(() => {
@@ -108,7 +114,7 @@ export const YouTubePlayer = forwardRef<YouTubePlayerRef, YouTubePlayerProps>(
           playerRef.current.destroy();
         }
       };
-    }, [videoId, onTimeUpdate]);
+    }, [videoId, onTimeUpdate, initialTime]);
 
     return (
       <div className={className}>

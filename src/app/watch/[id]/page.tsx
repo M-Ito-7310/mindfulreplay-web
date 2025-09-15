@@ -198,6 +198,7 @@ export default function WatchPage() {
                 videoId={youtubeId}
                 onTimeUpdate={setCurrentTime}
                 className="w-full aspect-video rounded-t-lg"
+                initialTime={timestampParam ? parseInt(timestampParam) : undefined}
               />
 
               {/* Video Info */}
