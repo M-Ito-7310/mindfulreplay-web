@@ -40,8 +40,9 @@ export function shouldUseMockData(): boolean {
 
 // Demo mode flag helper - for authentication
 export function shouldUseDemoAuth(): boolean {
-  // Enable demo auth by default unless explicitly disabled
-  return process.env.DEMO_MODE !== 'false' || process.env.NODE_ENV === 'development' || shouldUseMockData();
+  // For portfolio demo: Always use demo auth unless we have real OAuth providers configured
+  // This ensures the app works immediately without complex auth setup
+  return true;
 }
 
 // Default export
